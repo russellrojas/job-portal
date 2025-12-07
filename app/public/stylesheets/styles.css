@@ -1,0 +1,140 @@
+/* Style général*/
+main {
+    background-color: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+/* HEADER */
+.fakeimg {
+    width: 120px;
+    height: 100%;
+    background: #aaa;
+}
+
+#barreOu {
+  position: relative;
+  text-align: center;
+  color: #000000;
+  overflow: visible;
+}
+
+#barreOu:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background-color: #000;
+  transform: translateY(-50%);
+}
+
+#barreOu:after {
+  content: "ou";
+  font-size: 15px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  padding: 0 10px;
+}
+
+.nav {
+    width: 10%;
+    height: 100vh;
+}
+
+header {
+    display: flex;               
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: black solid 1px;
+    height: 50px;
+    font-size: 13px;
+    padding: 0 20px;              
+    box-sizing: border-box;       
+    width: 100%;                 
+    background-color: white;      
+    position: relative;           /* Para control de stacking */
+}
+
+
+.filtrerBtn{
+    width: 40px;
+    font-size: 13px;
+    height: 40px;
+    border: none;
+}
+
+.reset_filter{
+    min-width: 250px;
+    font-size: 13px;
+    height: 40px;
+    white-space: nowrap;
+    overflow: hidden; 
+    text-overflow: ellipsis;
+    flex-shrink: 0;
+}
+
+.filter {
+    font-size: 13px;
+    min-width: 150px;
+}
+
+  
+/* BOUTONS */
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+/*curseur sur le bouton*/
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #495057;
+}
+
+
+h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+h3 {
+    color: #444;
+    margin-bottom: 15px;
+}
+
+.logo {
+  width: 50%;
+  max-width: 200px;
+  height: auto;
+}
+
+.error_message {
+    color: red;
+}

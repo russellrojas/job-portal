@@ -1,0 +1,126 @@
+<% if (filtres_checkbox) { %>
+  <div class="flex me-15 fs-5 gap-20" style="height: 50px;">
+    <% filtres_checkbox.forEach( (filtre) => { %>
+      <div class="form-check">
+        <label class="form-check-label" for="<%= filtre.variable %><%= numero %>">
+            <%= filtre.label %>
+        </label>
+        <input class="form-check-input" type="checkbox" id="<%= filtre.variable %><%= numero %>" checked>
+      </div>
+    <% }) %>
+  </div> 
+<% } %>
+
+<div class="d-flex justify-content-center gap-4 " style="height: 50px;">
+<% if (filtres) { %>
+  <% filtres.forEach( (filtre) => { %>
+      <div class="filter input-group mb-3">
+          <input id="<%= filtre %><%= numero %>" type="text" class="filter form-control" placeholder="<%= filtre %>">
+      </div>
+  <% }) %>
+<% } %>
+
+<% if (filtres_customs) { %>
+  <% filtres_customs.forEach( (filtre) => { %>
+      <div class="filter input-group mb-3">
+          <input id="<%= filtre.variable %><%= numero %>" <% if (filtre.default_value){ %> value = <%=filtre.default_value%> <% } %> type="<%= filtre.type ? filtre.type : 'text' %>" class="filter form-control" placeholder="<%= filtre.variable %>" >
+      </div>
+  <% }) %>
+<% } %>
+
+<button class="filtrerBtn btn btn-outline-secondary" type="button" style="border: none;" id="filtrerBtn<%= numero %>">
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+  </svg>
+</button>
+<button class="reset_filter btn btn-primary" type="button" id="reset_filter<%= numero %>">Réinitialiser les filtres</button>
+</div> 
+
+
+<script src="/script/utilitaires.js"></script> 
+
+<script>
+  var page<%= numero %> = null;
+  var filters<%= numero %> = null;
+  var checkboxes<%= numero %> = null;
+  var filtres_customs<%= numero %> = null;
+  console.log("c'est l'init qui marche pas 1");
+  document.addEventListener('DOMContentLoaded', function () {
+    console.log("l'init marche");
+    <% if (filtres) { %>
+      filters<%= numero %> = {
+        <% filtres.forEach((filtre, i)=> { %>
+          "<%= filtre %><%= numero %>": { element: document.getElementById("<%= filtre %><%= numero %>"), colIndex: "<%= i %>" },
+        <% }) %>
+      };
+    <% }else{ %>
+      filters<%= numero %> = null;
+    <% } %>
+
+    <% if (filtres_checkbox) { %>
+      checkboxes<%= numero %> = [
+        <% filtres_checkbox.forEach((filtre_checkbox)=> { %>
+        {
+          element : document.getElementById('<%= filtre_checkbox.variable %><%= numero %>'),
+          check_function : <%- filtre_checkbox.check_function %>
+        },
+        <% }) %>
+      ];
+    <% }else{ %>
+      checkboxes<%= numero %> = null;
+    <% } %>
+
+    <% if (filtres_customs) { %>
+      filtres_customs<%= numero %> = [
+        <% filtres_customs.forEach((filtre)=> { %>
+        {
+          element : document.getElementById('<%= filtre.variable %><%= numero %>'),
+          check_function : <%- filtre.check_function %>,
+          default_value : <%= filtre.default_value || "null" %>
+        },
+        <% }) %>
+      ];
+    <% }else{ %>
+      filtres_customs<%= numero %> = null;
+    <% } %>
+    
+    
+
+    document.getElementById('filtrerBtn<%= numero %>').addEventListener('click', () => {
+      filtrerTableau({
+        idRowsSelector: '#tr<%= numero %>',
+        filters: filters<%= numero %>,
+        checkboxFilters: checkboxes<%= numero %>,
+        nb_page: page<%= numero %>,
+        filtres_customs: filtres_customs<%= numero %>
+      });
+    });
+
+    // Bouton de réinitialisation
+    document.getElementById('reset_filter<%= numero %>').addEventListener('click', () => {
+      <% if (filtres) { %>
+        Object.values(filters<%= numero %>).forEach(f => f.element.value = '');
+      <% } %>
+      <% if (filtres_checkbox) { %>
+        (checkboxes<%= numero %>).forEach(f => f.element.checked = true);
+      <% } %>
+      <% if (filtres_customs) { %>
+        (filtres_customs<%= numero %>).forEach(f =>{ 
+          if (f.default_value !== null) {
+            f.element.value = f.default_value;
+          } else {
+            f.element.value = '';
+          }
+      });
+      <% } %>
+      filtrerTableau({
+        idRowsSelector: '#tr<%= numero %>',
+        filters: filters<%= numero %>, 
+        checkboxFilters: checkboxes<%= numero %>,
+        nb_page: page<%= numero %>,
+        filtres_customs: filtres_customs<%= numero %>
+      });
+    });
+  });
+</script>
+

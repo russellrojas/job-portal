@@ -1,0 +1,89 @@
+@startuml
+class Utilisateur{
+ nom : string
+ prenom : string
+ telephone : string
+ date_creation : date
+ actif : boolean
+ email : string {UNIQUE}
+ mdp : string 
+}
+class Administrateur
+class Recruteur
+class Candidat
+
+class DemandeRecruteur{
+date_creation : date
+etat : enum{"en attente", "refusée", "acceptée"}
+}
+
+class DemandeAdmin{
+date_creation : date
+etat : enum{"en attente", "refusée", "acceptée"}
+}
+
+class DemandeAdhesion{
+date_creation : date
+etat : enum{"en attente", "refusée", "acceptée"}
+}
+
+class DemandeOrganisation{
+Siren: string
+nom : string
+type : string
+siege_social : string
+date_creation : date
+etat : enum{"en attente", "refusée", "acceptée"}
+}
+
+class Organisation{
+ Siren: string {Primary Key}
+ nom : string
+ type : string
+ siege_social : string
+}
+ 
+class OffreEmploi{
+ etat : enum{"non publiée","publiée","expirée"}
+ date_validite : date
+ indication : text 
+}
+ 
+class FichePoste{
+ intitule : string
+ statut_poste : string
+ 
+ type_metier : string
+ lieu_mission : string
+ rythme : string
+ salaire_min : money
+ salaire_max : money
+ description : text
+ responsable_hierarchique : string
+}
+ 
+class Candidature{
+ date_candidature : date
+}
+ 
+class PieceJointe{
+ content : binary
+}
+ 
+Recruteur --|> Candidat
+Administrateur --|> Utilisateur
+Candidat --|> Utilisateur
+ 
+Recruteur "*" -- "0..1" Organisation : fait parti de >
+ 
+OffreEmploi "*" -- "1" FichePoste : est rattaché à >
+FichePoste "*" -- "1" Organisation : appartient à >
+Candidature "*" -- "1" Candidat : < poste 
+Candidature "1" -- "*" PieceJointe : contient >
+Candidature "*" -- "1" OffreEmploi : porte sur >
+Utilisateur "1" -- "0..1" DemandeRecruteur : fait >
+Utilisateur "1" -- "0..1" DemandeOrganisation : fait >
+Utilisateur "1" -- "0..1" DemandeAdmin : fait >
+Utilisateur "1" -- "0..1" DemandeAdhesion : fait >
+Organisation "1" -- "*" DemandeAdhesion : porte sur <
+@enduml

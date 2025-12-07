@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Créer un compte</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="/stylesheets/styles.css">
+</head> 
+<body>
+
+ <%- include('header')%>
+
+<div class="d-flex">
+    <nav class="nav nav-expand-lg bg-body-tertiary flex-column justify-content-center">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/gestion_des_admins">Demandes admin</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="/admin/ecran_administrateur">Demandes recruteurs</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/gestion_des_organisations">Demandes organisations</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/gestion_des_adhesions_aux_organisations">Demandes adhésions</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/gestion_des_utilisateurs">Gestion des utilisateurs</a>
+            </li>
+          </ul>
+    </nav>
+
+
+<div class="d-flex flex-column bd-highlight ms-5 mt-5 justify-content-center" style="width: 375px;">
+  <p class="fs-5">Utilisateur : <%= message %> </p>
+  <form class="fs-6" action="/admin/modification_d_un_utilisateur/mise_a_jour/" method="POST">
+    <input type="hidden" name="id" value="<%= user.id %>">
+    <div class="form-group my-2">
+      <label for="modificationInputNom" class="mt-2 mb-1">Nom</label>
+      <input type="text" class="form-control mb-2 mt-1" id="modificationInputNom" name="nom" required value="<%= user.nom %>">
+    </div>
+
+    <div class="form-group my-2">
+      <label for="modificationInputPrenom" class="mt-2 mb-1">Prénom</label>
+      <input type="text" class="form-control mb-2 mt-1" id="modificationInputPrenom" name="prenom" required value="<%= user.prenom %>">
+    </div>
+
+    <div class="form-group my-2">
+      <label for="modificationInputTelephone" class="mt-2 mb-1">Télephone</label>
+      <input type="tel" class="form-control mb-2 mt-1" id="modificationInputTelephone" name="telephone" required value="<%= user.telephone %>">
+    </div>
+
+    <div class="form-group my-2">
+      <label for="modificationInputActif" class="mt-2 mb-1">Actif</label>
+      <input class="check-input" type="checkbox" value="true" id="modificationInputActif" name="actif" <% if (user.actif === 'true' || user.actif === '1') { %> checked <% } %> >
+    </div>
+
+    <div class="form-group my-2">
+      <label for="modificationInputType" class="mt-2 mb-1">Type d'utilisateur</label>
+      <select class="custom-select" id="modificationInputType" name="type_utilisateur" required>
+        <% if(user.type_utilisateur == "candidat"){ %>
+          <option value="candidat" selected>candidat</option>
+          <option value="recruteur">recruteur</option>
+          <option value="admin">admin</option>
+        <% }else if(user.type_utilisateur == "recruteur"){ %>
+          <option value="candidat">candidat</option>
+          <option value="recruteur" selected>recruteur</option>
+          <option value="admin">admin</option>
+        <% }else{ %>
+          <option value="candidat">candidat</option>
+          <option value="recruteur">recruteur</option>
+          <option value="admin" selected>admin</option>
+         <% } %>
+      </select>
+    </div>
+
+    <div class="form-group my-2">
+      <label for="modificationInputSiren" class="mt-2 mb-1">Siren de l'organisation associée</label>
+      <input type="text" class="form-control mb-2 mt-1" id="modificationInputSiren" name="siren_organisation" value="<%= user.siren_organisation %>">
+    </div>
+
+    <div class="form-group my-2">
+      <label for="modificationInputEmail" class="mt-2 mb-1">Email</label>
+      <input type="email" class="form-control mb-2 mt-1" id="modificationInputEmail" name="email" required value="<%= user.email %>">
+    </div>
+
+    <button type="submit" class="btn btn-primary my-4">Mettre à jour</button>
+  </form>
+</div>
+
+<footer></footer>  
+
+
+</body>
+</html>
+

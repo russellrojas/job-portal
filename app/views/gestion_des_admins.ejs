@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Gestion des administrateurs</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="/stylesheets/styles.css"> 
+</head> 
+<body>
+
+ <%- include('header')%>
+
+<div class="d-flex">
+    <nav class="nav nav-expand-lg bg-body-tertiary flex-column justify-content-center">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link active" href="/admin/gestion_des_recruteurs">Demandes recruteurs</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/gestion_des_organisations">Demandes organisations</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/gestion_des_adhesions_aux_organisations">Demandes adhésions</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/gestion_des_utilisateurs">Gestion des utilisateurs</a>
+            </li>
+          </ul>
+    </nav>
+
+
+    <div class="d-flex flex-column bd-highlight ms-5 mt-5 gap-4">
+        <div class="fs-5">Demandes pour devenir administrateur : </div>
+        <div class="d-flex justify-content-center gap-4 " style="height: 50px;">
+            <%- include('filter', {filtres: filtres_non_traitees, filtres_customs: null, filtres_checkbox: null, numero: 1}) %>
+        </div> 
+        <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Nom</th>
+                <th scope="col">Prénom</th>
+                <th scope="col">Email</th>
+                <th scope="col">n° télephone</th>
+                <th scope="col">Date de la demande</th>
+                <th scope="col">Décision</th>
+              </tr>
+            </thead>
+            <tbody>
+                <% demandes_admins_non_traitees.forEach((demande)=> { %>
+                <tr id="tr1">
+                    <td>
+                    <%= demande.nom %>
+                    </td>
+                    <td>
+                    <%= demande.prenom %>
+                    </td>
+                    <td>
+                    <%= demande.email %>
+                    </td>
+                    <td>
+                        <%= demande.telephone %>
+                    </td>
+                    <td>
+                        <%= demande.date_demande_admin %>
+                    </td>
+                    <td>
+                        <div class="flex justify-content-center gap-4 ">
+                            <form action="/admin/gestion_des_admins/accepter" method="POST">
+                                <input type="hidden" name="id" value="<%= demande.id %>">
+                                <button class="btn btn-outline-secondary" type="submit" style="border: none;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+                                    </svg>
+                                </button>
+                            </form>
+                            <form action="/admin/gestion_des_admins/refuser" method="POST">
+                                <input type="hidden" name="id" value="<%= demande.id %>">
+                                <button class="btn btn-outline-secondary" type="submit" style="border: none;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                                    </svg>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                <% }) %>
+            </tbody>
+          </table>
+          <%- include('paginator', {taille: demandes_admins_non_traitees.length , numero: 1}) %>
+          <div class="fs-5">Déjà traitées : </div>
+          <div class="d-flex justify-content-center gap-4 " style="height: 50px;">
+            <%- include('filter', {filtres: filtres_traitees, filtres_customs: null, filtres_checkbox: null, numero: 2}) %>
+          </div> 
+          <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th scope="col">nom</th>
+                  <th scope="col">prénom</th>
+                  <th scope="col">email</th>
+                  <th scope="col">n° télephone</th>
+                  <th scope="col">État de la demande</th>
+                  <th scope="col">Retraiter la demande</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% demandes_admins_traitees.forEach((demande)=> { %>
+                    <tr id="tr2">
+                        <td>
+                        <%= demande.nom %>
+                        </td>
+                        <td>
+                        <%= demande.prenom %>
+                        </td>
+                        <td>
+                        <%= demande.email %>
+                        </td>
+                        <td>
+                            <%= demande.telephone %>
+                        </td>
+                        <td>
+                            <%= demande.etat_demande_admin %>
+                        </td>
+                        <td>
+                            <form action="/admin/gestion_des_admins/retraiter" method="post">
+                                <input type="hidden" name="id" value="<%= demande.id %>">
+                                <input type="hidden" name="etat_demande_recruteur" value="<%= demande.etat_demande_recruteur %>">
+                                <button class="btn btn-outline-secondary ms-2" type="submit" style="border: none;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
+                                        <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41m-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9"/>
+                                        <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5 5 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z"/>
+                                    </svg>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                <% }) %>
+              </tbody>
+            </table>
+            <%- include('paginator', {taille: demandes_admins_traitees.length , numero: 2}) %>
+    </div>
+</div>
+<footer></footer>
+</body>
+</html>

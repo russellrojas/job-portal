@@ -1,0 +1,114 @@
+<nav aria-label="Paginator">
+    <ul class="pagination">
+        <li class="page-item"><button type="button" class="btn btn-outline-secondary" id="btn_page_actuel<%= numero %>">Page 1 sur  <%= Math.ceil(taille / 10) %></button></li>
+        <li class="page-item"><button type="button" class="btn btn-outline-secondary" id="btn_paginator_debut<%= numero %>">début</button></li>
+        <li class="page-item">
+            <button type="button" class="btn btn-outline-secondary" id="btn_paginator_precedant<%= numero %>">
+                <span aria-hidden="true">&laquo;</span>
+            </button>
+        </li>
+
+        <% for (let nb_paginator = 1; nb_paginator <= Math.ceil(taille / 10); nb_paginator++) { %>
+            <li class="page-item"><button class="btn btn-outline-secondary" type="button" id="btn_paginator<%= nb_paginator %><%= numero %>"><%= nb_paginator %></button></li>
+        <% } %>
+
+        <li class="page-item">
+            <button type="button" class="btn btn-outline-secondary" id="btn_paginator_suivant<%= numero %>">
+                <span aria-hidden="true">&raquo;</span>
+            </button>
+        </li>
+        <li class="page-item"><button type="button" class="btn btn-outline-secondary" id="btn_paginator_fin<%= numero %>">fin</button></li>
+    </ul>
+</nav>
+
+<script src="/script/utilitaires.js"></script> 
+
+<script>
+var page<%= numero %> = 1;
+var filters<%= numero %> = null;
+var checkboxes<%= numero %> = null;
+var filtres_customs<%= numero %> = null;
+
+document.addEventListener('DOMContentLoaded', function () {
+    let page_max<%= numero %> = <%= Math.ceil(taille / 10) %>;
+    filtrerTableau({
+        idRowsSelector : '#tr<%= numero %>',
+        nb_page : 1,
+        taille_page : 10,
+        filters: filters<%= numero %>,
+        checkboxFilters: checkboxes<%= numero %>,
+        filtres_customs: filtres_customs<%= numero %>
+    });
+
+    <% for (let nb_paginator = 1; nb_paginator <= Math.ceil(taille / 10); nb_paginator++) { %>
+        document.getElementById('btn_paginator<%= nb_paginator %><%= numero %>').addEventListener('click', () => {
+            page<%= numero %> = <%= nb_paginator %>;
+            filtrerTableau({
+                idRowsSelector : '#tr<%= numero %>',
+                nb_page : page<%= numero %>,
+                taille_page : 10,
+                filters: filters<%= numero %>,
+                checkboxFilters: checkboxes<%= numero %>,
+                filtres_customs: filtres_customs<%= numero %>
+            });
+            document.getElementById('btn_page_actuel<%= numero %>').innerText = `Page ${page<%= numero %>} sur ${page_max<%= numero %>}`;
+        });
+    <% } %>
+
+    document.getElementById('btn_paginator_precedant<%= numero %>').addEventListener('click', () => {
+        if (page<%= numero %> > 1) {
+            page<%= numero %>--;
+            filtrerTableau({
+                idRowsSelector : '#tr<%= numero %>',
+                nb_page : page<%= numero %>,
+                taille_page : 10,
+                filters: filters<%= numero %>,
+                checkboxFilters: checkboxes<%= numero %>,
+                filtres_customs: filtres_customs<%= numero %>
+            });
+            document.getElementById('btn_page_actuel<%= numero %>').innerText = `Page ${page<%= numero %>} sur ${page_max<%= numero %>}`;
+        }
+    });
+
+    document.getElementById('btn_paginator_suivant<%= numero %>').addEventListener('click', () => {
+        if (page<%= numero %> < page_max<%= numero %>) {
+            page<%= numero %>++;
+            filtrerTableau({
+                idRowsSelector : '#tr<%= numero %>',
+                nb_page : page<%= numero %>,
+                taille_page : 10,
+                filters: filters<%= numero %>,
+                checkboxFilters: checkboxes<%= numero %>,
+                filtres_customs: filtres_customs<%= numero %>
+            });
+            document.getElementById('btn_page_actuel<%= numero %>').innerText = `Page ${page<%= numero %>} sur ${page_max<%= numero %>}`;
+        }
+    });
+
+    document.getElementById('btn_paginator_debut<%= numero %>').addEventListener('click', () => {
+        page<%= numero %>=1;
+        filtrerTableau({
+            idRowsSelector : '#tr<%= numero %>',
+            nb_page : 1,
+            taille_page : 10,
+            filters: filters<%= numero %>,
+            checkboxFilters: checkboxes<%= numero %>,
+            filtres_customs: filtres_customs<%= numero %>
+        });
+        document.getElementById('btn_page_actuel<%= numero %>').innerText = `Page 1 sur ${page_max<%= numero %>}`;
+    });
+
+    document.getElementById('btn_paginator_fin<%= numero %>').addEventListener('click', () => {
+        page<%= numero %> = page_max<%= numero %>;
+        filtrerTableau({
+            idRowsSelector : '#tr<%= numero %>',
+            nb_page : page_max<%= numero %>,
+            taille_page : 10,
+            filters: filters<%= numero %>,
+            checkboxFilters: checkboxes<%= numero %>,
+            filtres_customs: filtres_customs<%= numero %>
+        });
+        document.getElementById('btn_page_actuel<%= numero %>').innerText = `Page ${page_max<%= numero %>} sur ${page_max<%= numero %>}`;
+    });
+  });
+</script>

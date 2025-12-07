@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html >
+    <head>
+        <title>Ecran rejoindre/créer son organisation</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <link rel="stylesheet" href="/stylesheets/styles.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    </head>
+    <body>
+        <%- include('header') %>
+        <main style="margin-top: 15px; padding-top: 0;">
+            <div align="right" >    
+                <form action="/candidat/demander_devenir_admin" style="display: inline-block; margin-right: 10px;" method="GET">
+                    <button type="submit" class="btn btn-sm btn-outline-secondary" name="dev_adm">Devenir admin</button>
+                </form>
+            </div>
+            <!--Message pour ajout_organisation ou adhesion organisation-->
+            <% if (error) { %>
+                </br><div class="alert alert-danger"><%= error %></div>
+            <% } %>
+
+            <% if (success) { %>
+                </br><div class="alert alert-success"><%= success %></div>
+            <% } %>
+            
+            <h3><strong>Gérer mon Organisation 📁 </strong></h3>
+            <!--CONTROL DE ORGANISATION-->
+            <div class="container bg-light p-2 border mb-3">
+                <div class="row">
+                    <% if (ma_organisation && ma_organisation.etat_demande_adhesion === "acceptée") { %>
+                            <p><strong>Organisation actuelle (Siren) :</strong> <%= ma_organisation.nom %> (<%= ma_organisation.siren %>)</p>
+                    <% } else { %>
+                            <p><strong>Organisation actuelle :</strong> Vous n'appartenez à aucune organisation.</p>
+                    <% } %>
+                    <!--ajouter organisation-->
+                    <% if (utilisateur.siren_organisation_creation && utilisateur.etat_demande_organisation==='en attente') { %>
+                            <p><strong>Demande d'ajout de ma organisation :</strong> Oui, <%= utilisateur.etat_demande_organisation %>. </p>
+                            <p><strong>Organisation demandée (Siren) :</strong><%= utilisateur.nom_organisation_creation%> (<%=utilisateur.siren_organisation_creation %>)</p>
+                    <% } else { %>
+                            <p><strong>Demande d'ajout de ma organisation:</strong> Non.</p>
+                            <!--rejoindre a une autre organisation-->
+                        <% if (utilisateur.siren_organisation && utilisateur.etat_demande_adhesion==='en attente') { %>
+                            <p><strong>Demande d'adhésion à une organisation existante :</strong> Oui, <%= utilisateur.etat_demande_adhesion %>.</p>
+                            <% const orgDemandee = organisations.find(org => org.siren === utilisateur.siren_organisation); %>
+                            <p><strong>Organisation demandée (Siren) :</strong> 
+                            <%= orgDemandee ? orgDemandee.nom : "Organisation inconnue" %>
+                            (<%= utilisateur.siren_organisation %>)</p>
+                        <% } else { %>   
+                            <p><strong>Demande d'adhésion à une organisation existante :</strong> Non.</p>
+                        <% } %>
+                    <% } %>
+                </div>
+            </div>
+            <!--annuler demande-->
+            <div align="center">
+                <% if (utilisateur.etat_demande_organisation === 'en attente' || utilisateur.etat_demande_adhesion === 'en attente') { %>
+                    <form action="/recruteur/annulerDemandeOrganisation" method="POST">
+                        <button type="submit" class="btn btn-danger btn-sm mt-2">Annuler la demande</button>
+                    </form>
+                <% } %>
+            </div>
+            <!--FIN CONTROL DE ORGANISATION-->
+            <h3>Ajouter une organisation:</h3>
+            <div class="container mt-4">
+                <form id="ajout_organisation" action="/recruteur/ajouterOrganisation" method="post">
+                    <div class="mb-2">
+                        <label for="siren">Siren:</label>
+                        <input type="text" id="siren" name="siren_creation" class="form-control" required>
+                    </div>
+                    <div class="mb-2">
+                        <label for="nom">Nom de l'organisation:</label>
+                        <input type="text" id="nom" name="nom_creation" class="form-control" required>
+                    </div>
+                    <div class="mb-2">
+                        <label for="type">Type d'organisation:</label>
+                        <input type="text" id="type" name="type_creation" class="form-control" required>
+                    </div>
+                    <div class="mb-2">
+                        <label for="siege">Siège social:</label>
+                        <input type="text" id="siege" name="siege_social_creation" class="form-control" required>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-success">Ajouter l'organisation</button>
+                    </div>
+                </form>
+            </div>
+            <h3>Liste des Organisations:</h3>
+            <%- include('filter', { filtres: filtres, filtres_customs: null, filtres_checkbox: null, numero: 1}) %>
+            <div class="container">
+                <table class="table table-striped mt-3">
+                    <thead>
+                        <tr>
+                            <th>Nom de l'Organisation</th>
+                            <th>Siren</th>
+                            <th>Type</th>
+                            <th>Siège Social</th>
+                            <th>Rejoindre</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <% if (organisations && organisations.length > 0) { %>
+                            <% organisations.forEach(org => { %>
+                                <tr id="tr1">
+                                    <td><%= org.nom %></td>
+                                    <td><%= org.siren %></td>
+                                    <td><%= org.types %></td>
+                                    <td><%= org.siege_social %></td>
+                                    <td>
+                                        <form action="/recruteur/demanderAdhesionOrganisation" method="POST">
+                                            <input type="hidden" name="siren" value="<%= org.siren %>">
+                                            <button type="submit" class="btn btn-success"
+                                                <% if (utilisateur.etat_demande_adhesion === 'en attente') { %> disabled<% } %>>
+                                                Demander adhésion
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="5">Aucune organisation trouvée.</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+            <%- include('paginator', {taille: organisations.length , numero: 1})%>
+            <div align="center">
+                <form action="/candidat/ecran_candidat">
+                    <button type="submit" class="btn btn-primary">Retourner visualiser les offres</button>
+                </form>
+            </div>
+        
+        </main>
+         
+    </body>
+
+</html>

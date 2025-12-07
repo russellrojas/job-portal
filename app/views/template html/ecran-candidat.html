@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html >
+    <head>
+        <title>Ecran Candidat</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <link href="styles.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    </head>
+    <body>
+        <header>Logo du site</header>
+        <main>
+            <div align="center">
+                <form action="ecran-demander-devenir-admin.html" style="display: inline-block; margin-right: 10px;">
+                    <button type="submit" class="btn btn-primary" name="dev_adm">Devenir admin</button>
+                </form>
+                <form action="ecran-demander-devenir-recruteur.html" style="display: inline-block;">
+                    <button type="submit" class="btn btn-primary" name="dev_rec" >Devenir recruteur</button>
+                </form><br>
+            </div>
+            <div>
+                <h2>Bienvenue, <strong id="nom-utilisateur">Chargement...</strong></h2>
+                <div class="container bg-light p-3 border">
+                    <p><strong>Téléphone:</strong> <span id="telephone-utilisateur">Chargement...</span></p>
+                    <p><strong>Email:</strong> <span id="email-utilisateur">Chargement...</span></p>
+                </div><br>
+            </div>
+            <script>
+                const utilisateur = {
+                    nom: "Pierre Dupont",
+                    telephone: "0123456789",
+                    email: "pierre.dupont@email.com"
+                };
+                
+                document.getElementById("nom-utilisateur").textContent = utilisateur.nom;
+                document.getElementById("telephone-utilisateur").textContent = utilisateur.telephone;
+                document.getElementById("email-utilisateur").textContent = utilisateur.email;
+            </script>  
+            <div>
+                <input name="offre" type="text" placeholder="Rechercher une offre">
+                <button>🔍</button>
+            </div>
+   
+            <div class="row mb-2">
+                <div class="col-md-2">
+                    <select class="form-select">
+                    <option selected>Salaire</option>
+                    <option value="1">Moins de 1500€ par mois</option>
+                    <option value="2">1500€ - 2500€ par mois</option>
+                    <option value="3">Plus de 5000€ par mois</option>
+                    <option value="4">À négocier</option>
+                    <option value="5">Non spécifié</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select">
+                    <option selected>Type de contrat</option>
+                    <option value="1">CDI (Contrat à Durée Indéterminée)</option>
+                    <option value="2">CDD (Contrat à Durée Déterminée)</option>
+                    <option value="3">Intérim</option>
+                    <option value="4">Alternance</option>
+                    <option value="5">Autre</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select">
+                    <option selected>Secteur d'activité</option>
+                    <option value="1">option 1</option>
+                    <option value="2">option 2</option>
+                    <option value="3">option 3</option>
+                    <option value="4">option 4</option>
+                    <option value="5">Autre</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select">
+                    <option selected>Experience</option>
+                    <option value="1">option 1</option>
+                    <option value="2">option 2</option>
+                    <option value="3">option 3</option>
+                    <option value="4">option 4</option>
+                    <option value="5">Autre</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select">
+                    <option selected>Date de publication</option>
+                    <option value="1">Dernière 24 heures</option>
+                    <option value="2">Dernière semaine</option>
+                    <option value="3">Dernier mois</option>
+                    <option value="4">Anciens</option>
+                    </select>
+                </div>
+            </div>
+            <div class="container">
+                <h1 class="mt-4">Liste des Offres d'Emploi</h1>
+        
+                <table class="table table-striped mt-3">
+                    <thead>
+                        <tr>
+                            <th>Intitulé</th>
+                            <th>Type de Métier</th>
+                            <th>Lieu</th>
+                            <th>Salaire</th>
+                            <th>Voir Candidatures</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <!-- Ici les lignes seront ajoutées dynamiquement -->
+                    </tbody>
+                </table>
+         
+                <script>
+                    // Exemple de données récupérées dynamiquement
+                    const offres = [
+                        { intitule: "Développeur Web", metier: "Informatique", lieu: "Paris", salaire: "45 000€" },
+                        { intitule: "Ingénieur Réseau", metier: "Télécom", lieu: "Lyon", salaire: "50 000€" },
+                        { intitule: "Technicien Support", metier: "IT", lieu: "Marseille", salaire: "35 000€" }
+                    ];
+            
+                    // Sélectionner le tbody de la table
+                    const tableBody = document.getElementById("table-body");
+            
+                    // Remplir la table avec les données
+                    offres.forEach(offre => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${offre.intitule}</td>
+                            <td>${offre.metier}</td>
+                            <td>${offre.lieu}</td>
+                            <td>${offre.salaire}</td>
+                            <td><button class="btn btn-primary">Voir ses candidatures</button></td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                </script>
+            <div align="center">
+                <form action="gestion-de-ses-candidatures.html">
+                    <button type="submit" class="btn btn-primary">Gérer ses candidatures</button>
+                </form> <br>
+                
+                <button type="submit" class="btn btn-secondary">Récruter</button>
+            </div>
+                    
+            <!--Pagination-exemple-->
+            <ul class="pagination">
+                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
+        </main>
+    </body>
+</html>

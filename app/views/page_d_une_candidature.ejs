@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html >
+    <head>
+        <title>Page d'une candidature</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <link rel="stylesheet" href="/stylesheets/styles.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    </head>
+    <body>
+        <%- include('header')%> 
+        <main style="margin-top: 15px; padding-top: 0;">
+            <div align="right" >    
+                <form action="/candidat/demander_devenir_admin" style="display: inline-block; margin-right: 10px;" method="GET">
+                    <button type="submit" class="btn btn-sm btn-outline-secondary" name="dev_adm">Devenir admin</button>
+                </form>
+                <% if (session.type_utilisateur==='candidat') { %>
+                    <form action="/candidat/demander_devenir_recruteur" style="display: inline-block;" method="GET">
+                        <button type="submit" class="btn btn-sm btn-outline-secondary" name="dev_rec">Devenir recruteur</button>
+                    </form>
+                <% } %>
+            </div>       
+            <h2><strong>Gerer ma candidature </strong></h2> 
+                <div class="d-flex justify-content-center gap-3 mt-4">
+                    <% if (candidatureRecente) { %>
+                        <form action="/candidat/confirmer_candidature" method="POST">
+                            <input type="hidden" name="offreEmploiId" value="<%= candidature.offre_emploi %>">
+                            <button type="submit" class="btn btn-success">Confirmer ma candidature</button>
+                        </form>
+                        <form action="/candidat/annuler_candidature" method="POST">
+                            <input type="hidden" name="offreEmploiId" value="<%= candidature.offre_emploi %>">
+                            <button type="submit" class="btn btn-danger">Annuler ma candidature</button>
+                        </form>
+                    <% } else { %>
+                        <form action="/candidat/annuler_candidature" method="POST" >
+                            <input type="hidden" name="offreEmploiId" value="<%= candidature.offre_emploi %>">
+                            <button type="submit" class="btn btn-danger">Annuler ma candidature</button>
+                        </form>
+                    <% } %>
+                </div></br>    
+            <div class="container bg-light p-2 border">
+                <p><strong>Poste :</strong> <span><%= candidature.poste %></span></p>
+                <p><strong>Organisation :</strong> <span><%= candidature.organisation %></span></p>
+                <p><strong>Date de candidature :</strong> <span><%= candidature.date_candidature %></span></p>
+            </div></br>
+            <h5>Ajouter un nouveau fichier :</h5>
+            <div class="container mt-4">
+                <form id="ajout_fichier" action="/gestion_des_fichiers/ajoutfichier" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="offre_emploi" value="<%= candidature.offre_emploi %>">
+                    <div class="row">
+                        <div class="col-md-5 mb-2">
+                            <input type="file" id="document" name="document" class="form-control form-control-sm" required>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <select id="type_document" name="type_document" class="form-select form-select-sm" required>
+                                <option value="cv">CV</option>
+                                <option value="photo">Photo</option>
+                                <option value="lettre_motivation">Lettre de motivation</option>
+                                <option value="piece_identite">Pièce d'identité</option>
+                                <option value="diplome">Diplôme</option>
+                                <option value="autre">Autre</option>
+                            </select>
+                        </div>
+                        <div class="col-auto mb-2">
+                            <button type="submit" class="btn btn-success btn-sm">Ajouter fichier</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!--Lista de mes fichiers-->
+            <h2 class="mt-4">Mes fichiers :</h2>
+            <div class="container">
+                <table class="table table-striped mt-3">
+                    <thead>
+                        <tr>
+                            <th>Nom fichier</th>
+                            <th>Type de document</th>
+                            <th>Taille (ko)</th>
+                            <th>Date ajout</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <% if (fichiers && fichiers.length > 0) { %>
+                        <% fichiers.forEach(function(fichier) { %>
+                            <tr>
+                                <td><%= fichier.nom_fichier %></td>
+                                <td><%= fichier.type_document %></td>
+                                <td><%= (fichier.taille / 1024).toFixed(1) %> ko</td>
+                                <td><%= fichier.date_ajout.toLocaleString ? fichier.date_ajout.toLocaleString() : fichier.date_ajout %></td>
+                                <td class="d-flex gap-2 justify-content-center">
+                                    <form action="/gestion_des_fichiers/telecharger_fichier" method="POST" style="display:inline;">
+                                        <input type="hidden" name="id" value="<%= fichier.id %>">
+                                        <button type="submit" class="btn btn-primary btn-sm" title="Télécharger">
+                                            <i class="bi bi-download"></i> Télécharger
+                                        </button>
+                                    </form>
+                                    <form action="/gestion_des_fichiers/supprimer_fichier" method="POST" style="display:inline;" onsubmit="return confirm('Supprimer ce fichier ?');">
+                                        <input type="hidden" name="id" value="<%= fichier.id %>">
+                                        <button type="submit" class="btn btn-danger btn-sm" title="Supprimer">
+                                            <i class="bi bi-trash"></i> Supprimer
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="5" class="text-center">Aucun fichier trouvé.</td>
+                        </tr>
+                    <% } %>
+                    </tbody>
+                </table>
+            </div>
+
+
+    
+            <div class="container" align="center">
+                <form action="/candidat/page_d_une_offre" method="POST" style="display: inline-block; margin-right: 10px;">
+                    <input type="hidden" name="offreId" value="<%= candidature.offre_emploi %>">
+                    <button type="submit" class="btn btn-success">Voir Offre</button>
+                </form>            
+                <form action="/candidat/gestion_de_ses_candidatures" style="display: inline-block; margin-right: 10px;" method="GET">
+                    <button type="submit" class="btn btn-success">Mes candidatures</button>
+                </form>
+                <form action="/candidat/ecran_candidat" style="display: inline-block; margin-right: 10px;" method="GET">
+                    <button type="submit" class="btn btn-primary">Retourner voir les offres</button>
+                </form>
+            </div>
+        </main>
+        <!--capture de fichiers sans recharger la page-->
+        <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('ajout_fichier');
+
+            form.addEventListener('submit', function (event) {
+            event.preventDefault(); 
+
+            const formData = new FormData(form);
+
+            fetch('/gestion_des_fichiers/ajoutfichier', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+            if (data.success) {
+                const tbody = document.querySelector("table tbody");
+                const fichier = data.fichier;
+
+                //Eliminar fila "Aucun fichier trouvé"
+                const noFilesRow = tbody.querySelector("tr td[colspan='5']");
+                if (noFilesRow) {
+                noFilesRow.parentElement.remove();
+                }
+
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                <td>${fichier.nom_fichier}</td>
+                <td>${fichier.type_document}</td>
+                <td>${(fichier.taille / 1024).toFixed(1)} ko</td>
+                <td>${fichier.date_ajout}</td>
+                <td class="d-flex gap-2 justify-content-center">
+                    <!-- Télécharger -->
+                    <form action="/gestion_des_fichiers/telecharger_fichier" method="POST" style="display:inline;">
+                    <input type="hidden" name="id" value="${fichier.id}">
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i class="bi bi-download"></i> Télécharger
+                    </button>
+                    </form>
+                    <!-- Supprimer -->
+                    <form action="/gestion_des_fichiers/supprimer_fichier" method="POST" style="display:inline;" onsubmit="return confirm('Supprimer ce fichier ?');">
+                    <input type="hidden" name="id" value="${fichier.id}">
+                    <button type="submit" class="btn btn-danger btn-sm">
+                        <i class="bi bi-trash"></i> Supprimer
+                    </button>
+                    </form>
+                </td>
+                `;
+
+                tbody.prepend(row);
+                form.reset();
+            } else {
+                alert("Erreur lors de l'ajout du fichier.");
+            }
+            })
+
+            .catch(err => {
+                console.error("Erreur AJAX:", err);
+            });
+            });
+        });
+        </script>
+
+    </body>
+</html>

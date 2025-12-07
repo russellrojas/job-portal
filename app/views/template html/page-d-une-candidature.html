@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html >
+    <head>
+        <title>Page d'une candidature</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <link href="styles.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    </head>
+    <body>
+        <header>Logo du site</header>
+        <main>
+            <div align="center">
+                <form action="ecran-demander-devenir-admin.html" style="display: inline-block; margin-right: 10px;">
+                    <button type="submit" class="btn btn-primary" name="dev_adm">Devenir admin</button>
+                </form>
+                <form action="ecran-demander-devenir-recruteur.html" style="display: inline-block;">
+                    <button type="submit" class="btn btn-primary" name="dev_rec" >Devenir recruteur</button>
+                </form><br>
+            </div>
+            <h2>Détails de la Candidature</h2>
+        
+            <div>
+                <h3>Offre: <strong id="intitule-offre">Chargement...</strong></h3>
+                <p><strong>État de la candidature:</strong> <span id="etat-candidature">Chargement...</span></p>
+            </div>
+    
+            <div  class="container">
+                <div align="center">
+                    <button class="btn btn-success">Ajouter des fichiers</button>
+                </div>
+                <h4>Pièces jointes:</h4> 
+                <ul id="liste-pieces-jointes">
+          
+                </ul>
+                <div class="form-group mt-2">
+                    <button type="button" class="btn btn-success">Soumettre la candidature</button>
+                    <button type="button" class="btn btn-danger">Annuler la candidature</button>
+                    
+                </div><br><br>
+            </div>
+            <div class="container">
+                <form action="ecran-candidat.html" style="display: inline-block; margin-right: 10px;">
+                    <button type="submit" class="btn btn-primary">Retourner voir les offres</button>
+                </form>
+                
+                <form action="page-d-une-offre.html" style="display: inline-block; margin-right: 10px;">
+                    <button type="submit" class="btn btn-info">Voir la page de l'offre</button>
+                </form>
+                
+                <form action="gestion-de-ses-candidatures.html" style="display: inline-block;">
+                    <button type="submit" class="btn btn-info">Voir ses candidatures</button>
+                </form>
+        
+            </div>
+
+            <ul class="pagination mt-4">
+                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
+    
+        <script>
+            // Exemple de données récupérées dynamiquement
+            const candidature = {
+                intitule: "Développeur Web",
+                etat: "En attente",
+                piecesJointes: [
+                    { nom: "CV_Pierre_Dupont.pdf", taille: "120KB" },
+                    { nom: "Lettre_de_motivation.pdf", taille: "150KB" }
+                ]
+            };
+    
+            // Insérer les données dans la page
+            document.getElementById("intitule-offre").textContent = candidature.intitule;
+            document.getElementById("etat-candidature").textContent = candidature.etat;
+    
+            // Ajouter les pièces jointes dynamiquement
+            const listePieces = document.getElementById("liste-pieces-jointes");
+            candidature.piecesJointes.forEach(fichier => {
+                const li = document.createElement("li");
+                li.innerHTML = `
+                    ${fichier.nom} (${fichier.taille})
+                    <button class="btn btn-danger btn-sm btn-sm">Supprimer</button>
+                `;
+                listePieces.appendChild(li);
+            });
+        </script>
+        </main>
+    </body>
+</html>
